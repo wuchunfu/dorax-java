@@ -16,6 +16,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <slf4j.version>1.7.29</slf4j.version>
+        <jedis.version>3.2.0</jedis.version>
         <fastjson.version>1.2.62</fastjson.version>
         <guava.version>28.1-jre</guava.version>
         <commons-lang3.version>3.9</commons-lang3.version>
@@ -39,6 +40,11 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
