@@ -23,6 +23,7 @@
         <commons-codec.version>1.13</commons-codec.version>
         <commons-io.version>2.6</commons-io.version>
         <commons-text.version>1.8</commons-text.version>
+        <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
     </properties>
 
     <repositories>
@@ -74,6 +75,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>${commons-text.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
