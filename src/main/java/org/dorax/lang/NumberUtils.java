@@ -1,6 +1,7 @@
 package org.dorax.lang;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.text.DecimalFormat;
 
 /**
@@ -113,5 +114,27 @@ public class NumberUtils {
             df = new DecimalFormat(pattern);
         }
         return df.format(data);
+    }
+
+    /**
+     * 获取object的值
+     *
+     * @param object object 对象
+     * @return 值
+     */
+    public static Long getLong(Object object) {
+        if (object == null) {
+            return null;
+        }
+        if (object instanceof BigDecimal) {
+            return ((BigDecimal) object).longValue();
+        }
+        if (object instanceof BigInteger) {
+            return ((BigInteger) object).longValue();
+        }
+        if (object instanceof Long) {
+            return ((Long) object);
+        }
+        return null;
     }
 }
