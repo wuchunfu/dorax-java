@@ -2,7 +2,10 @@ package org.dorax.network;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Enumeration;
 
 /**
  * ip工具类
@@ -62,5 +65,39 @@ public class IpInfoUtils {
             e.printStackTrace();
         }
         return "unknown";
+    }
+
+    /**
+     * 获取客户端 IP
+     *
+     * @return ip 地址
+     */
+    public static String getClientIp() {
+        try {
+            StringBuilder ifConfig = new StringBuilder();
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && !inetAddress.isLinkLocalAddress() && inetAddress.isSiteLocalAddress()) {
+                        ifConfig.append(inetAddress.getHostAddress()).append("\n");
+                    }
+                }
+            }
+            return ifConfig.toString();
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(getHostName());
+        System.out.println(getClientIp());
     }
 }
