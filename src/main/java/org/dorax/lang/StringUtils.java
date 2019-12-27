@@ -20,6 +20,174 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 
     private static final char SEPARATOR = '_';
     private static final String CHARSET_NAME = "UTF-8";
+    private static Pattern linePattern = Pattern.compile("_(\\w)");
+    private static Pattern humpPattern = Pattern.compile("[A-Z]");
+
+    /**
+     * 下划线转驼峰
+     *
+     * @param str 要转换的字符串
+     * @return 转换后的值
+     */
+    public static String lineToHump(String str) {
+        if (null == str || "".equals(str)) {
+            return str;
+        }
+        str = str.toLowerCase();
+        Matcher matcher = linePattern.matcher(str);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+        }
+        matcher.appendTail(sb);
+        str = sb.toString();
+        str = str.substring(0, 1).toUpperCase() + str.substring(1);
+        return str;
+    }
+
+    /**
+     * 驼峰转下划线,效率比上面高
+     *
+     * @param str 要转换的字符串
+     * @return 转换后的值
+     */
+    public static String humpToLine(String str) {
+        Matcher matcher = humpPattern.matcher(str);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, "_" + matcher.group(0).toLowerCase());
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
+
+    /**
+     * 驼峰转下划线(简单写法，效率低于{@link #humpToLine(String)})
+     *
+     * @param str 要转换的字符串
+     * @return 转换后的值
+     */
+    public static String humpToLine2(String str) {
+        return str.replaceAll("[A-Z]", "_$0").toLowerCase();
+    }
+
+    /**
+     * 首字母转小写
+     *
+     * @param str 要转换的字符串
+     * @return 转换后的值
+     */
+    public static String toLowerCaseFirstOne(String str) {
+        if (StringUtils.isBlank(str)) {
+            return str;
+        }
+        if (Character.isLowerCase(str.charAt(0))) {
+            return str;
+        } else {
+            return Character.toLowerCase(str.charAt(0)) + str.substring(1);
+        }
+    }
+
+    /**
+     * 首字母转大写
+     *
+     * @param str 要转换的字符串
+     * @return 转换后的值
+     */
+    public static String toUpperCaseFirstOne(String str) {
+        if (StringUtils.isBlank(str)) {
+            return str;
+        }
+        if (Character.isUpperCase(str.charAt(0))) {
+            return str;
+        } else {
+            return Character.toUpperCase(str.charAt(0)) + str.substring(1);
+        }
+    }
+
+    /**
+     * Object 转 String
+     *
+     * @param object object 对象
+     * @return string 值
+     */
+    public static String getString(Object object) {
+        return getString(object, "");
+    }
+
+    /**
+     * Object 转 String
+     *
+     * @param object       object 对象
+     * @param defaultValue 默认值
+     * @return string 值
+     */
+    public static String getString(Object object, String defaultValue) {
+        if (null == object) {
+            return defaultValue;
+        }
+        try {
+            return object.toString();
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Object 转 Integer
+     *
+     * @param object object 对象
+     * @return int 值
+     */
+    public static int getInt(Object object) {
+        return getInt(object, -1);
+    }
+
+    /**
+     * Object 转 Integer
+     *
+     * @param object       object 对象
+     * @param defaultValue 默认值
+     * @return int 值
+     */
+    public static int getInt(Object object, Integer defaultValue) {
+        if (null == object) {
+            return defaultValue;
+        }
+        try {
+            return Integer.parseInt(object.toString());
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Object 转 Boolean
+     *
+     * @param object object 对象
+     * @return 布尔值
+     */
+    public static boolean getBoolean(Object object) {
+        return getBoolean(object, false);
+    }
+
+    /**
+     * Object 转 Boolean
+     *
+     * @param object       object 对象
+     * @param defaultValue 默认值
+     * @return 布尔对象
+     */
+    public static boolean getBoolean(Object object, Boolean defaultValue) {
+        if (null == object) {
+            return defaultValue;
+        }
+        try {
+            return Boolean.parseBoolean(object.toString());
+        } catch (Exception e) {
+            return defaultValue;
+        }
+    }
 
     /**
      * 转换为字节数组
@@ -189,20 +357,20 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         // 是不是HTML代码
         boolean isCode = false;
         // 是不是HTML特殊字符,如&nbsp;
-        boolean isHTML = false;
+        boolean isHtml = false;
         for (int i = 0; i < param.length(); i++) {
             temp = param.charAt(i);
             if (temp == '<') {
                 isCode = true;
             } else if (temp == '&') {
-                isHTML = true;
+                isHtml = true;
             } else if (temp == '>' && isCode) {
                 n = n - 1;
                 isCode = false;
-            } else if (temp == ';' && isHTML) {
-                isHTML = false;
+            } else if (temp == ';' && isHtml) {
+                isHtml = false;
             }
-            if (!isCode && !isHTML) {
+            if (!isCode && !isHtml) {
                 n += String.valueOf(temp).getBytes(StandardCharsets.UTF_8).length;
             }
             if (n <= length - 3) {
@@ -223,14 +391,14 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
         tempResult = tempResult.replaceAll("<([a-zA-Z]+)[^<>]*>(.*?)</\\1>", "$2");
         // 用正则表达式取出标记
         Matcher m = p1.matcher(tempResult);
-        List<String> endHTML = new ArrayList<>();
+        List<String> endHtml = new ArrayList<>();
         while (m.find()) {
-            endHTML.add(m.group(1));
+            endHtml.add(m.group(1));
         }
         // 补全不成对的HTML标记
-        for (int i = endHTML.size() - 1; i >= 0; i--) {
+        for (int i = endHtml.size() - 1; i >= 0; i--) {
             result.append("</");
-            result.append(endHTML.get(i));
+            result.append(endHtml.get(i));
             result.append(">");
         }
         return result.toString();
@@ -390,10 +558,7 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
     /**
      * 获取树节点名字
      *
-     * @param isShowCode 是否显示编码<br>
-     *                   true or 1：显示在左侧：(code)name<br>
-     *                   2：显示在右侧：name(code)<br>
-     *                   false or null：不显示编码：name
+     * @param isShowCode 是否显示编码 true or 1：显示在左侧：(code)name 2：显示在右侧：name(code) false or null：不显示编码：name
      * @param code       编码
      * @param name       名称
      * @return 数据节点名称
