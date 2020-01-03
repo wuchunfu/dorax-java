@@ -1,5 +1,7 @@
 package org.dorax.utils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +58,26 @@ public class CommonUtil {
             keys.add(entry.getKey());
         }
         return keys;
+    }
+
+    public static String assembleUrl(String url, Map<String, String> params) {
+        if (!url.endsWith("?")) {
+            url += "?";
+        }
+        StringBuilder urlBuilder = new StringBuilder(url);
+        for (String key : params.keySet()) {
+            try {
+                if (params.get(key) == null || params.get(key).length() == 0) {
+                    urlBuilder.append(key).append("=").append(params.get(key)).append("&");
+                } else {
+                    urlBuilder.append(key).append("=").append(URLEncoder.encode(params.get(key), "UTF-8")).append("&");
+                }
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        url = urlBuilder.toString();
+        return url;
     }
 
     public static void main(String[] args) {
