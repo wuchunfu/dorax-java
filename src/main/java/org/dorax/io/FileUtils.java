@@ -1,5 +1,7 @@
 package org.dorax.io;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +10,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFileAttributeView;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * 文件操作
@@ -22,6 +34,138 @@ public class FileUtils {
      */
     public static String matches = "[A-Za-z]:\\\\[^:?\"><*]*";
     public final static String CRLF = System.getProperty("line.separator");
+
+    private static List<String> ExtsDocument = Arrays.asList(
+            ".doc", ".docx", ".docm",
+            ".dot", ".dotx", ".dotm",
+            ".odt", ".fodt", ".rtf", ".txt",
+            ".html", ".htm", ".mht",
+            ".pdf", ".djvu", ".fb2", ".epub", ".xps");
+
+    private static List<String> ExtsSpreadsheet = Arrays.asList(
+            ".xls", ".xlsx", ".xlsm",
+            ".xlt", ".xltx", ".xltm",
+            ".ods", ".fods", ".csv");
+
+    private static List<String> ExtsPresentation = Arrays.asList(
+            ".pps", ".ppsx", ".ppsm",
+            ".ppt", ".pptx", ".pptm",
+            ".pot", ".potx", ".potm",
+            ".odp", ".fodp");
+
+    public enum FileType {
+        /**
+         * 1. text
+         * 2. Spreadsheet
+         * 3. Presentation
+         */
+        Text,
+        Spreadsheet,
+        Presentation
+    }
+
+    public static FileType getFileType(String fileName) {
+        String ext = getExtension(fileName).toLowerCase();
+        if (ExtsDocument.contains(ext)) {
+            return FileType.Text;
+        }
+        if (ExtsSpreadsheet.contains(ext)) {
+            return FileType.Spreadsheet;
+        }
+        if (ExtsPresentation.contains(ext)) {
+            return FileType.Presentation;
+        }
+        return FileType.Text;
+    }
+
+    /**
+     * 获取扩展名
+     *
+     * @param fileName 文件名称
+     * @return 扩展名
+     */
+    public static String getExtension(String fileName) {
+        if (StringUtils.INDEX_NOT_FOUND == StringUtils.indexOf(fileName, ".")) {
+            return StringUtils.EMPTY;
+        }
+        String ext = StringUtils.substring(fileName, StringUtils.lastIndexOf(fileName, "."));
+        return StringUtils.trimToEmpty(ext);
+    }
+
+    /**
+     * 获取文件名
+     *
+     * @param header header
+     * @return 文件名称
+     */
+    public static String getFileName(String header) {
+        String[] tempArr1 = header.split(";");
+        String[] tempArr2 = tempArr1[2].split("=");
+        // 获取文件名，兼容各种浏览器的写法
+        return tempArr2[1].substring(tempArr2[1].lastIndexOf("\\") + 1).replaceAll("\"", "");
+    }
+
+    /**
+     * 获取路径权限
+     *
+     * @param path 路径
+     * @return 权限代码
+     * @throws IOException IOException
+     */
+    public static String getPermissions(Path path) throws IOException {
+        PosixFileAttributeView fileAttributeView = Files.getFileAttributeView(path, PosixFileAttributeView.class);
+        PosixFileAttributes readAttributes = fileAttributeView.readAttributes();
+        Set<PosixFilePermission> permissions = readAttributes.permissions();
+        return PosixFilePermissions.toString(permissions);
+    }
+
+    /**
+     * 设置文件权限
+     *
+     * @param file      文件
+     * @param permsCode 权限代码
+     * @param recursive 是否是递归的
+     * @return 权限代码
+     * @throws IOException IOException
+     */
+    public static String setPermissions(File file, String permsCode, boolean recursive) throws IOException {
+        PosixFileAttributeView fileAttributeView = Files.getFileAttributeView(file.toPath(), PosixFileAttributeView.class);
+        fileAttributeView.setPermissions(PosixFilePermissions.fromString(permsCode));
+        if (file.isDirectory() && recursive && file.listFiles() != null) {
+            for (File f : Objects.requireNonNull(file.listFiles())) {
+                setPermissions(f, permsCode, true);
+            }
+        }
+        return permsCode;
+    }
+
+    /**
+     * 创建文件夹
+     *
+     * @param fileFolderName 文件夹名称
+     */
+    public static void mkFolder(String fileFolderName) {
+        File file = new File(fileFolderName);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+    }
+
+    /**
+     * 创建文件
+     *
+     * @param fileName 文件名称
+     * @return 文件
+     */
+    public static File mkFile(String fileName) {
+        File file = new File(fileName);
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return file;
+    }
 
     /**
      * 将文本文件中的内容读入到buffer中
