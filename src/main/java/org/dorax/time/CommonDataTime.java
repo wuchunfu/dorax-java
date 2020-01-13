@@ -1,10 +1,14 @@
 package org.dorax.time;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * 时间计算工具类
@@ -92,9 +96,66 @@ public class CommonDataTime {
         return interval;
     }
 
+    /**
+     * Prints the duration in a human readable format as X days Y hours Z minutes etc.
+     *
+     * @param uptime the uptime in millis
+     * @return the time used for displaying on screen or in logs
+     */
+    public static String printDuration(double uptime) {
+        NumberFormat fmtI = new DecimalFormat("###,###", new DecimalFormatSymbols(Locale.ENGLISH));
+        NumberFormat fmtD = new DecimalFormat("###,##0.000", new DecimalFormatSymbols(Locale.ENGLISH));
+        uptime /= 1000;
+        if (uptime < 60) {
+            return fmtD.format(uptime) + " seconds";
+        }
+        uptime /= 60;
+        if (uptime < 60) {
+            long minutes = (long) uptime;
+            return fmtI.format(minutes) + (minutes > 1 ? " minutes" : " minute");
+        }
+        uptime /= 60;
+        if (uptime < 24) {
+            long hours = (long) uptime;
+            long minutes = (long) ((uptime - hours) * 60);
+            String s = fmtI.format(hours) + (hours > 1 ? " hours" : " hour");
+            if (minutes != 0) {
+                s += " " + fmtI.format(minutes) + (minutes > 1 ? " minutes" : " minute");
+            }
+            return s;
+        }
+        uptime /= 24;
+        long days = (long) uptime;
+        long hours = (long) ((uptime - days) * 24);
+        String s = fmtI.format(days) + (days > 1 ? " days" : " day");
+        if (hours != 0) {
+            s += " " + fmtI.format(hours) + (hours > 1 ? " hours" : " hour");
+        }
+        return s;
+    }
+
+    public static boolean waitOnBoolean(boolean expected, long timeout, CheckMethod check) {
+        long timeLeft = timeout;
+        long interval = 10;
+        while (check.check() != expected && timeLeft > 0) {
+            try {
+                Thread.sleep(interval);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            timeLeft -= interval;
+        }
+        return check.check() == expected;
+    }
+
+    public interface CheckMethod {
+        boolean check();
+    }
+
     public static void main(String[] args) {
         System.out.println(formatDateAgo(Instant.now().getEpochSecond()));
         System.out.println(formatTimeAgo("2019-12-05"));
         System.out.println(formatTimeAgo(LocalDateTime.now()));
+        System.out.println(printDuration(Instant.now().getEpochSecond()));
     }
 }
