@@ -82,6 +82,22 @@ public class ByteUtils {
         return String.format(formatStr, (size)) + "B";
     }
 
+    public static String formatOfByteSize(long size) {
+        double s = Long.valueOf(size).doubleValue();
+        String suffix = "B";
+        if (s > 1024 * 1024 * 1024) {
+            s /= 1024 * 1024 * 1024;
+            suffix = "GB";
+        } else if (s > 1024 * 1024) {
+            s /= 1024 * 1024;
+            suffix = "MB";
+        } else if (s > 1024) {
+            s /= 1024;
+            suffix = "KB";
+        }
+        return String.format("%.2f %s", s, suffix);
+    }
+
     public static void main(String[] args) {
         System.out.println(ByteUtils.formatByteSize(1023));
         System.out.println(ByteUtils.formatByteSize(UNIT));
