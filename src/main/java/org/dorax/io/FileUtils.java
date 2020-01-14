@@ -1,6 +1,8 @@
 package org.dorax.io;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,6 +30,8 @@ import java.util.Set;
  * @date 2019-12-07
  */
 public class FileUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(FileUtils.class);
 
     /**
      * 验证字符串是否为正确路径名的正则
@@ -310,6 +314,30 @@ public class FileUtils {
             return num;
         } else {
             return 0;
+        }
+    }
+
+    /**
+     * 创建文件
+     *
+     * @param path 文件路径
+     * @return 是否创建成功
+     */
+    public static boolean createFile(final Path path) {
+        try {
+            final Path parent = path.getParent();
+            if (parent == null) {
+                log.warn("Failed to create file as the parent was null. path: {}", path);
+                return false;
+            }
+            Files.createDirectories(parent);
+            if (Files.notExists(path)) {
+                Files.createFile(path);
+            }
+            return true;
+        } catch (final Exception e) {
+            log.warn("createFile failed, path: {}", path, e);
+            return false;
         }
     }
 }
