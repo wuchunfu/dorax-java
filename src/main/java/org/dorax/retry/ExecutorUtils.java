@@ -1,4 +1,4 @@
-package org.dorax.utils;
+package org.dorax.retry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
