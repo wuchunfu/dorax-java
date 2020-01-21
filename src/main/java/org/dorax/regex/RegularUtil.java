@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class RegularUtil {
 
     /**
-     * 验证邮箱
+     * 判断是否是邮箱
      *
      * @param str 待验证的字符串
      * @return 如果是符合的字符串, 返回 true ,否则为 false
@@ -23,19 +23,20 @@ public class RegularUtil {
     }
 
     /**
-     * 验证IP地址
+     * 判断是否是IP地址
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
      */
     public static boolean isIp(String str) {
-        String num = "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)";
-        String regex = "^" + num + "\\." + num + "\\." + num + "\\." + num + "$";
+//        String num = "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|[1-9]?\\d)";
+//        String regex = "^" + num + "\\." + num + "\\." + num + "\\." + num + "$";
+        String regex = "((?:(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d))";
         return match(regex, str);
     }
 
     /**
-     * 验证网址Url
+     * 判断是否是 HTTP(s) URL
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
@@ -46,24 +47,47 @@ public class RegularUtil {
     }
 
     /**
-     * 验证电话号码
+     * 判断是否是 FTP 网址
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isFTP(String str) {
+        String regex = "ftp\\:\\/\\/[^:]*:@([^\\/]*)";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是电话号码
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
      */
     public static boolean isTelephone(String str) {
-        String regex = "^(\\d{3,4}-)?\\d{6,8}$";
+//        String regex = "^(\\d{3,4}-)?\\d{6,8}$";
+        String regex = "^((0\\d{2,3})-)(\\d{7,8})(-(\\d{3,}))?$";
         return match(regex, str);
     }
 
     /**
-     * 验证手机号码
+     * 判断是否是手机号码
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
      */
     public static boolean isMobliePhone(String str) {
         String regex = "^((13[0-9])|(15[0-9])|(18[0-9]))\\d{8}$";
+        return match(regex, str);
+    }
+
+    /**
+     * 验证输入手机号码
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true ,否则为 false
+     */
+    public static boolean isHandset(String str) {
+        String regex = "^[1]+[3,5]+\\d{9}$";
         return match(regex, str);
     }
 
@@ -90,24 +114,14 @@ public class RegularUtil {
     }
 
     /**
-     * 验证输入邮政编号
+     * 判断是否是邮政编码
+     * (?!n) : 匹配任何其后没有紧接指定字符串 n 的字符串。反向预查
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
      */
-    public static boolean isPostalcode(String str) {
-        String regex = "^\\d{6}$";
-        return match(regex, str);
-    }
-
-    /**
-     * 验证输入手机号码
-     *
-     * @param str 待验证的字符串
-     * @return 如果是符合格式的字符串, 返回 true ,否则为 false
-     */
-    public static boolean isHandset(String str) {
-        String regex = "^[1]+[3,5]+\\d{9}$";
+    public static boolean isPostalCode(String str) {
+        String regex = "[1-9]\\d{5}(?!\\d)";
         return match(regex, str);
     }
 
@@ -118,7 +132,18 @@ public class RegularUtil {
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
      */
     public static boolean isIdCard(String str) {
-        String regex = "(^\\d{18}$)|(^\\d{15}$)";
+        String regex = "(^\\d{15}$)|(^\\d{18}$)|(^\\d{17}(\\d|X|x)$)";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是外籍分配身份证号码
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isFidCard(String str) {
+        String regex = "^F\\S{16}F$";
         return match(regex, str);
     }
 
@@ -184,7 +209,7 @@ public class RegularUtil {
     }
 
     /**
-     * 验证数字输入
+     * 判断是否是数字
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
@@ -206,7 +231,7 @@ public class RegularUtil {
     }
 
     /**
-     * 验证大写字母
+     * 判断是否是大写字母
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
@@ -217,7 +242,7 @@ public class RegularUtil {
     }
 
     /**
-     * 验证小写字母
+     * 判断是否是小写字母
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
@@ -228,7 +253,7 @@ public class RegularUtil {
     }
 
     /**
-     * 验证验证输入字母
+     * 判断是否是字母
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
@@ -239,24 +264,245 @@ public class RegularUtil {
     }
 
     /**
-     * 验证验证输入汉字
+     * 判断是否是汉字
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
      */
     public static boolean isChinese(String str) {
-        String regex = "^[\u4e00-\u9fa5],{0,}$";
+        String regex = "^[\u4e00-\u9fa5]+$";
         return match(regex, str);
     }
 
     /**
-     * 验证验证输入字符串
+     * 判断是否是自定义表达式
      *
      * @param str 待验证的字符串
      * @return 如果是符合格式的字符串, 返回 true,否则为 false
      */
-    public static boolean isLength(String str) {
-        String regex = "^.{8,}$";
+    public static boolean isEspressione(String str) {
+        String regex = "^\\#\\{.*?}$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是整数
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isNegativeInteger(String str) {
+        String regex = "^-[1-9]\\d*$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是正整数
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isPositiveInteger(String str) {
+        String regex = "^[1-9]\\d*$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是负数
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isNegativeNumber(String str) {
+        String regex = "^-[1-9]\\d*|0$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是正数
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isPositiveNumber(String str) {
+        String regex = "^[1-9]\\d*|0$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是数字
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isNum(String str) {
+        String regex = "^([+-]?)\\d*\\.?\\d+$";
+        return match(regex, str);
+    }
+
+    /**
+     * 正则表达式校验最多两位小数的实数
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isNumAndTwoDecimals(String str) {
+        String regex = "^(([0-9]*)|(([0]\\.\\d{0,2}|[0-9]*\\.\\d{0,2})))$";
+        return match(regex, str);
+
+    }
+
+    /**
+     * 判断是否是整数(负数,零,正数)
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isInteger(String str) {
+        String regex = "^-?([0-9]\\d*)$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是不是整数和小数
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isIntOrFloat(String str) {
+        String regex = "[+]?\\d+(\\.\\d+)?$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是正浮点数类型
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isPositiveFloat(String str) {
+        String regex = "^[1-9]\\d*.\\d*|0.\\d*[1-9]\\d*$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是负浮点数类型
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isNegativeFloat(String str) {
+        String regex = "^-([1-9]\\d*.\\d*|0.\\d*[1-9]\\d*)$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是浮点数类型
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isFloat(String str) {
+        String regex = "^-?([1-9]\\d*|0(?!\\.0+$))\\.\\d+?$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是非负浮点数类型（正浮点数大于等于10的数字且包含0）
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isNonNegativeFloat(String str) {
+        String regex = "^[1-9]\\d*.\\d*|0.\\d*[1-9]\\d*|0?.0+|0$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是非正浮点数类型（正浮点数大于等于-10的数字且包含0）
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isNonPositiveFloat(String str) {
+        String regex = "^(-([1-9]\\d*.\\d*|0.\\d*[1-9]\\d*))|0?.0+|0$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是非正浮点数类型（正浮点数大于等于-10的数字且包含0）
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isACSII(String str) {
+        String regex = "^[\\x00-\\xFF]+$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是是色值
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isColor(String str) {
+        String regex = "^#[a-fA-F0-9]{6}$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是QQ
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isQQ(String str) {
+        String regex = "^[1-9]*[1-9][0-9]*$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是图片, 支持 jpg|bmp|gif|ico|pcx|jpeg|tif|png|raw|tga
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isPicture(String str) {
+        String regex = "(.*)\\.(jpg|bmp|gif|ico|pcx|jpeg|tif|png|raw|tga)$";
+        return match(regex, regex);
+    }
+
+    /**
+     * 判断是否是压缩文件, 支持 rar|zip|7zip|7z|tgz|gz
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isCompressFile(String str) {
+        String regex = "(.*)\\.(rar|zip|7zip|7z|tgz|gz)$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是字母和数字混合(只有字母或数字也可以)
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isNumAndLetter(String str) {
+        String regex = "^[\\d|A-Za-z]+$";
+        return match(regex, str);
+    }
+
+    /**
+     * 判断是否是汉字、字母、数字的混合
+     *
+     * @param str 待验证的字符串
+     * @return 如果是符合格式的字符串, 返回 true,否则为 false
+     */
+    public static boolean isChineseAzNum(String str) {
+        String regex = "^[\\u4e00-\\u9fa5a-zA-Z0-9]+$";
         return match(regex, str);
     }
 
@@ -272,8 +518,11 @@ public class RegularUtil {
     }
 
     public static void main(String[] args) {
-        String test = "15138456324";
-        boolean flag = RegularUtil.isMobliePhone(test);
-        System.out.println(flag);
+        String mobliePhone = "15138456324";
+        String chinese = "中国";
+        boolean mobliePhoneFlag = RegularUtil.isMobliePhone(mobliePhone);
+        boolean chineseFlag = RegularUtil.isChinese(chinese);
+        System.out.println(mobliePhoneFlag);
+        System.out.println(chineseFlag);
     }
 }
