@@ -82,6 +82,45 @@ public class NumberUtils {
     }
 
     /**
+     * 返回较大的值
+     *
+     * @param v1 值1
+     * @param v2 值2
+     * @return 较大值
+     */
+    public static double max(double v1, double v2) {
+        BigDecimal b1 = new BigDecimal(v1);
+        BigDecimal b2 = new BigDecimal(v2);
+        return b1.max(b2).doubleValue();
+    }
+
+    /**
+     * 返回较小的值
+     *
+     * @param v1 值1
+     * @param v2 值2
+     * @return 较小值
+     */
+    public static double min(double v1, double v2) {
+        BigDecimal b1 = new BigDecimal(v1);
+        BigDecimal b2 = new BigDecimal(v2);
+        return b1.min(b2).doubleValue();
+    }
+
+    /**
+     * 比较两个数
+     *
+     * @param v1 比较数
+     * @param v2 被比较数
+     * @return 比较结果
+     */
+    public static double compareTo(double v1, double v2) {
+        BigDecimal b1 = new BigDecimal(v1);
+        BigDecimal b2 = new BigDecimal(v2);
+        return b1.compareTo(b2);
+    }
+
+    /**
      * 格式化双精度，保留两个小数
      *
      * @return 格式化后的数据
@@ -136,6 +175,32 @@ public class NumberUtils {
         }
         if (object instanceof Long) {
             return ((Long) object);
+        }
+        return null;
+    }
+
+    /**
+     * 将 BigDecimal 转换成 Long
+     *
+     * @param value BigDecimal 值
+     * @return Long 值
+     */
+    public static Long bigDecimalToLong(BigDecimal value) {
+        if (value != null) {
+            return value.longValue();
+        }
+        return null;
+    }
+
+    /**
+     * 将 BigDecimal 转换成 Integer
+     *
+     * @param value BigDecimal 值
+     * @return Integer 值
+     */
+    public static Integer bigDecimalToInteger(BigDecimal value) {
+        if (value != null) {
+            return value.intValue();
         }
         return null;
     }
