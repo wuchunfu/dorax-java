@@ -572,4 +572,200 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
             return StringUtils.replace(name, " ", "");
         }
     }
+
+    /**
+     * 将字符串重复N次，null、""不在循环次数里面 <br>
+     * 当value == null || value == "" return value;<br>
+     * 当count <= 1 返回  value
+     *
+     * @param value 需要循环的字符串
+     * @param count 循环的次数
+     * @return 重复N次的字符串
+     */
+    public static String repeatString(String value, int count) {
+        if (value == null || "".equals(value) || count <= 1) {
+            return value;
+        }
+        int length = value.length();
+        // 长度为1，存在字符
+        if (length == 1) {
+            return repeatChar(value.charAt(0), count);
+        }
+        int outputLength = length * count;
+        switch (length) {
+            case 1:
+                return repeatChar(value.charAt(0), count);
+            case 2:
+                char ch0 = value.charAt(0);
+                char ch1 = value.charAt(1);
+                char[] output2 = new char[outputLength];
+                for (int i = count * 2 - 2; i >= 0; i--, i--) {
+                    output2[i] = ch0;
+                    output2[i + 1] = ch1;
+                }
+                return new String(output2);
+            default:
+                StringBuilder buf = new StringBuilder(outputLength);
+                for (int i = 0; i < count; i++) {
+                    buf.append(value);
+                }
+                return buf.toString();
+        }
+    }
+
+    /**
+     * 将某个字符重复N次
+     *
+     * @param ch    需要循环的字符
+     * @param count 循环的次数
+     * @return 重复N次的字符串
+     */
+    public static String repeatChar(char ch, int count) {
+        char[] buf = new char[count];
+        for (int i = count - 1; i >= 0; i--) {
+            buf[i] = ch;
+        }
+        return new String(buf);
+    }
+
+    /**
+     * 判断字符串是否全部都为小写
+     *
+     * @param value 待判断的字符串
+     * @return 是否全部为小写
+     */
+    public static boolean isAllLowerCase(String value) {
+        if (value == null || "".equals(value)) {
+            return false;
+        }
+        for (int i = 0; i < value.length(); i++) {
+            if (!Character.isLowerCase(value.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 判断字符串是否全部大写
+     *
+     * @param value 待判断的字符串
+     * @return 是否全部为大写
+     */
+    public static boolean isAllUpperCase(String value) {
+        if (value == null || "".equals(value)) {
+            return false;
+        }
+        for (int i = 0; i < value.length(); i++) {
+            if (!Character.isUpperCase(value.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 反转字符串
+     *
+     * @param value 待反转的字符串
+     * @return 反转后的字符串
+     */
+    public static String reverse(String value) {
+        if (value == null) {
+            return null;
+        }
+        return new StringBuffer(value).reverse().toString();
+    }
+
+    /**
+     * 截取字符串，支持中英文混乱，其中中文当做两位处理
+     *
+     * @param resourceString 待截取的字符串
+     * @param length         截取长度
+     * @return 截取后的字符串
+     */
+    public static String subString(String resourceString, int length) {
+        String resultString = "";
+        if (resourceString == null || "".equals(resourceString) || length < 1) {
+            return resourceString;
+        }
+        if (resourceString.length() < length) {
+            return resourceString;
+        }
+        char[] chr = resourceString.toCharArray();
+        int strNum = 0;
+        int strGBKNum = 0;
+        boolean isHaveDot = false;
+        for (int i = 0; i < resourceString.length(); i++) {
+            // 0xa1汉字最小位开始
+            if (chr[i] >= 0xa1) {
+                strNum = strNum + 2;
+                strGBKNum++;
+            } else {
+                strNum++;
+            }
+            if (strNum == length || strNum == length + 1) {
+                if (i + 1 < resourceString.length()) {
+                    isHaveDot = true;
+                }
+                break;
+            }
+        }
+        resultString = resourceString.substring(0, strNum - strGBKNum);
+        if (isHaveDot) {
+            resultString = resultString + "...";
+        }
+        return resultString;
+    }
+
+    /**
+     * 截取 HTML 字符串
+     *
+     * @param htmlString 待截取的 html 字符串
+     * @param length     截取长度
+     * @return 截取后的字符串
+     */
+    public static String subHTMLString(String htmlString, int length) {
+        return subString(delHTMLTag(htmlString), length);
+    }
+
+    /**
+     * 过滤html标签，包括script、style、html、空格、回车标签
+     *
+     * @param htmlStr 待过滤的字符串
+     * @return 过滤后的字符串
+     */
+    public static String delHTMLTag(String htmlStr) {
+        // 定义script的正则表达式
+        String regexScript = "<script[^>]*?>[\\s\\S]*?<\\/script>";
+        // 定义style的正则表达式
+        String regexStyle = "<style[^>]*?>[\\s\\S]*?<\\/style>";
+        // 定义HTML标签的正则表达式
+        String regexHtml = "<[^>]+>";
+        // 定义空格回车换行符
+        String regexSpace = "\\s*|\t|\r|\n";
+
+        Pattern pScript = Pattern.compile(regexScript, Pattern.CASE_INSENSITIVE);
+        Matcher mScript = pScript.matcher(htmlStr);
+        // 过滤script标签
+        htmlStr = mScript.replaceAll("");
+
+        Pattern pStyle = Pattern.compile(regexStyle, Pattern.CASE_INSENSITIVE);
+        Matcher mStyle = pStyle.matcher(htmlStr);
+        // 过滤style标签
+        htmlStr = mStyle.replaceAll("");
+
+        Pattern pHtml = Pattern.compile(regexHtml, Pattern.CASE_INSENSITIVE);
+        Matcher mHtml = pHtml.matcher(htmlStr);
+        // 过滤html标签
+        htmlStr = mHtml.replaceAll("");
+
+        Pattern pSpace = Pattern.compile(regexSpace, Pattern.CASE_INSENSITIVE);
+        Matcher mSpace = pSpace.matcher(htmlStr);
+        // 过滤空格回车标签
+        htmlStr = mSpace.replaceAll("");
+
+        // 返回文本字符串
+        return htmlStr.trim();
+    }
 }
