@@ -25,6 +25,7 @@
         <commons-io.version>2.6</commons-io.version>
         <commons-text.version>1.8</commons-text.version>
         <commons-compress.version>1.19</commons-compress.version>
+        <poi.version>4.1.1</poi.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
     </properties>
 
@@ -87,6 +88,16 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>${commons-compress.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
