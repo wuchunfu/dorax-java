@@ -1,5 +1,8 @@
 package org.dorax.network;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * ip 获取工具类
  *
@@ -288,5 +291,37 @@ public class IpUtils {
         return (paramArrayOfByte[0] == 0) && (paramArrayOfByte[1] == 0) && (paramArrayOfByte[2] == 0) && (paramArrayOfByte[3] == 0)
                 && (paramArrayOfByte[4] == 0) && (paramArrayOfByte[5] == 0) && (paramArrayOfByte[6] == 0) && (paramArrayOfByte[7] == 0)
                 && (paramArrayOfByte[8] == 0) && (paramArrayOfByte[9] == 0) && (paramArrayOfByte[10] == -1) && (paramArrayOfByte[11] == -1);
+    }
+
+    private static final Pattern IPV4_PATTERN = Pattern.compile("^((25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(25[0-5]|2[0-4]\\d|[01]?\\d\\d?)$");
+    private static final Pattern IPV6_PATTERN = Pattern.compile("^([\\da-fA-F]{1,4}:){7}[\\da-fA-F]{1,4}$");
+
+    public static boolean isIPV4(String addr) {
+        return isMatch(addr, IPV4_PATTERN);
+    }
+
+    public static boolean isIPV6(String addr) {
+        return isMatch(addr, IPV6_PATTERN);
+    }
+
+    private static boolean isMatch(String data, Pattern pattern) {
+        if (isBlank(data)) {
+            return false;
+        }
+        Matcher mat = pattern.matcher(data);
+        return mat.find();
+    }
+
+    public static boolean isBlank(final CharSequence cs) {
+        int strLen;
+        if (cs == null || (strLen = cs.length()) == 0) {
+            return true;
+        }
+        for (int i = 0; i < strLen; i++) {
+            if (!Character.isWhitespace(cs.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 }
