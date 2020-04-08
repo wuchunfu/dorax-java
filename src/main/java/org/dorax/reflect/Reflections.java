@@ -101,10 +101,45 @@ public class Reflections {
             throw new IllegalArgumentException("Could not find field [" + fieldName + "] on target [" + obj + "]");
         }
         try {
-            field.set(obj, value);
+            field.set(obj, convert(value, field.getType()));
         } catch (IllegalAccessException e) {
             logger.error("不可能抛出的异常:{}", e.getMessage());
         }
+    }
+
+    /**
+     * 数据类型转换
+     *
+     * @param object object 对象
+     * @param type   数据类型
+     * @return object 对象
+     */
+    public static Object convert(Object object, Class<?> type) {
+        if (object instanceof Number) {
+            Number number = (Number) object;
+            if (type.equals(byte.class) || type.equals(Byte.class)) {
+                return number.byteValue();
+            }
+            if (type.equals(short.class) || type.equals(Short.class)) {
+                return number.shortValue();
+            }
+            if (type.equals(int.class) || type.equals(Integer.class)) {
+                return number.intValue();
+            }
+            if (type.equals(long.class) || type.equals(Long.class)) {
+                return number.longValue();
+            }
+            if (type.equals(float.class) || type.equals(Float.class)) {
+                return number.floatValue();
+            }
+            if (type.equals(double.class) || type.equals(Double.class)) {
+                return number.doubleValue();
+            }
+        }
+        if (type.equals(String.class)) {
+            return (object == null) ? "" : object.toString();
+        }
+        return object;
     }
 
     /**
@@ -343,5 +378,20 @@ public class Reflections {
             return (RuntimeException) e;
         }
         return new RuntimeException("Unexpected Checked Exception.", e);
+    }
+
+    /**
+     * 判断某个对象是否拥有某个属性
+     *
+     * @param obj       对象
+     * @param fieldName 属性名
+     * @return 有属性返回true, 无属性返回false
+     */
+    public static boolean hasField(final Object obj, final String fieldName) {
+        Field field = getAccessibleField(obj, fieldName);
+        if (field == null) {
+            return false;
+        }
+        return true;
     }
 }
