@@ -30,17 +30,17 @@ public class MacUtils {
         Process process;
         try {
             // Unix下的命令，一般取eth0作为本地主网卡 显示信息中包含有mac地址信息
-            process = Runtime.getRuntime().exec("ifconfig eth0");
+            process = Runtime.getRuntime().exec("ifconfig en0");
             bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             int index;
             while ((line = bufferedReader.readLine()) != null) {
                 // 寻找标示字符串[hwaddr]
-                index = line.toLowerCase().indexOf("hwaddr");
+                index = line.toLowerCase().indexOf("ether");
                 // 找到了
                 if (index != -1) {
                     // 取出mac地址并去除2边空格
-                    mac = line.substring(index + "hwaddr".length() + 1).trim();
+                    mac = line.substring(index + "ether".length() + 1).trim();
                     break;
                 }
             }
@@ -74,7 +74,7 @@ public class MacUtils {
             String line;
             int index;
             while ((line = bufferedReader.readLine()) != null) {
-                index = line.toLowerCase().indexOf("硬件地址");
+                index = line.toLowerCase().indexOf("ether");
                 // 找到了
                 if (index != -1) {
                     // 取出mac地址并去除2边空格
