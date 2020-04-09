@@ -2,9 +2,10 @@ package org.dorax.lang;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 /**
- * 金钱处理工具类
+ * 金钱处理工具类,主要是金额的格式化,金额的加、减
  *
  * @author wuchunfu
  * @date 2020-02-05
@@ -274,5 +275,237 @@ public class MoneyUtils {
                 break;
         }
         return cell;
+    }
+
+    public static DecimalFormat decimalFormat = new DecimalFormat("##0.00000000000000000000");
+
+    /**
+     * 格式化金额
+     *
+     * @param value 金额
+     * @return 格式化后的金额字符串
+     */
+    public static String formatMoney(String value) {
+        if (value == null || "".equals(value)) {
+            value = "0.00";
+        }
+        return decimalFormat.format(new BigDecimal(value));
+    }
+
+    /**
+     * 两数相加
+     *
+     * @param value    被加数
+     * @param addValue 加数
+     * @return 格式化字符串
+     */
+    public static String add(String value, String addValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal addStr = new BigDecimal(addValue);
+        return decimalFormat.format(valueStr.add(addStr));
+    }
+
+    /**
+     * 两数相加
+     *
+     * @param value    被加数
+     * @param addValue 加数
+     * @return 格式化字符串
+     */
+    public static Double add(Double value, Double addValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal addStr = new BigDecimal(addValue);
+        return valueStr.add(addStr).doubleValue();
+    }
+
+    /**
+     * 两数相加
+     *
+     * @param value    被加数
+     * @param addValue 加数
+     * @return 格式化字符串
+     */
+    public static BigDecimal add(BigDecimal value, BigDecimal addValue) {
+        return value.add(addValue);
+    }
+
+    /**
+     * 两数相减
+     *
+     * @param value    被减数
+     * @param subValue 减数
+     * @return 格式化字符串
+     */
+    public static String subtract(String value, String subValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal subStr = new BigDecimal(subValue);
+        return decimalFormat.format(valueStr.subtract(subStr));
+    }
+
+    /**
+     * 两数相减
+     *
+     * @param value    被减数
+     * @param subValue 减数
+     * @return 格式化字符串
+     */
+    public static Double subtract(Double value, Double subValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal subStr = new BigDecimal(subValue);
+        return valueStr.subtract(subStr).doubleValue();
+    }
+
+    /**
+     * 两数相减
+     *
+     * @param value    被减数
+     * @param subValue 减数
+     * @return 格式化字符串
+     */
+    public static BigDecimal subtract(BigDecimal value, BigDecimal subValue) {
+        return value.subtract(subValue);
+    }
+
+    /**
+     * 两数相乘
+     *
+     * @param value    被乘数
+     * @param mulValue 乘数
+     * @return 格式化字符串
+     */
+    public static String multiply(String value, String mulValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal mulStr = new BigDecimal(mulValue);
+        return decimalFormat.format(valueStr.multiply(mulStr));
+    }
+
+    /**
+     * 两数相乘
+     *
+     * @param value    被乘数
+     * @param mulValue 乘数
+     * @return 格式化字符串
+     */
+    public static Double multiply(Double value, Double mulValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal mulStr = new BigDecimal(mulValue);
+        return valueStr.multiply(mulStr).doubleValue();
+    }
+
+    /**
+     * 两数相乘
+     *
+     * @param value    被乘数
+     * @param mulValue 乘数
+     * @return 格式化字符串
+     */
+    public static BigDecimal multiply(BigDecimal value, BigDecimal mulValue) {
+        return value.multiply(mulValue);
+    }
+
+    /**
+     * 两数相除
+     *
+     * @param value    被除数
+     * @param divValue 除数
+     * @return 格式化字符串
+     */
+    public static String divide(String value, String divValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal divStr = new BigDecimal(divValue);
+        return decimalFormat.format(valueStr.divide(divStr, 2, BigDecimal.ROUND_HALF_UP));
+    }
+
+    /**
+     * 两数相除
+     *
+     * @param value    被除数
+     * @param divValue 除数
+     * @return 格式化字符串
+     */
+    public static Double divide(Double value, Double divValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal divStr = new BigDecimal(divValue);
+        return valueStr.divide(divStr, 2, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    /**
+     * 两数相除
+     *
+     * @param value    被除数
+     * @param divValue 除数
+     * @return 格式化字符串
+     */
+    public static BigDecimal divide(BigDecimal value, BigDecimal divValue) {
+        return value.divide(divValue, 2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    /**
+     * 两数比较大小
+     *
+     * @param value        被比较数
+     * @param compareValue 比较数
+     * @return 是否
+     */
+    public static boolean compare(String value, String compareValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal compareStr = new BigDecimal(compareValue);
+        // 0:等于 >0:大于 <0:小于
+        int result = valueStr.compareTo(compareStr);
+        if (result >= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 两数比较大小
+     *
+     * @param value        被比较数
+     * @param compareValue 比较数
+     * @return 是否
+     */
+    public static boolean compare(Double value, Double compareValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal compareStr = new BigDecimal(compareValue);
+        // 0:等于 >0:大于 <0:小于
+        int result = valueStr.compareTo(compareStr);
+        if (result >= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 两数比较大小
+     *
+     * @param value        被比较数
+     * @param compareValue 比较数
+     * @return 是否
+     */
+    public static boolean compare(BigDecimal value, BigDecimal compareValue) {
+        // 0:等于 >0:大于 <0:小于
+        int result = value.compareTo(compareValue);
+        if (result >= 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 金额乘以，省去小数点
+     *
+     * @param value    被除数
+     * @param divValue 除数
+     * @return 格式化字符串
+     */
+    public static String moneyMulOfNotPoint(String value, String divValue) {
+        BigDecimal valueStr = new BigDecimal(value);
+        BigDecimal mulValue = new BigDecimal(divValue);
+        value = decimalFormat.format(valueStr.multiply(mulValue));
+        return decimalFormat.format(valueStr.multiply(mulValue)).substring(0, value.length() - 3);
     }
 }
