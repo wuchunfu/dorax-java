@@ -25,7 +25,7 @@
         <commons-io.version>2.7</commons-io.version>
         <commons-text.version>1.8</commons-text.version>
         <commons-compress.version>1.20</commons-compress.version>
-        <poi.version>4.1.1</poi.version>
+        <poi.version>4.1.2</poi.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
     </properties>
 
