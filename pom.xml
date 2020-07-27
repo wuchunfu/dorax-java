@@ -23,7 +23,7 @@
         <commons-lang3.version>3.11</commons-lang3.version>
         <commons-codec.version>1.14</commons-codec.version>
         <commons-io.version>2.7</commons-io.version>
-        <commons-text.version>1.8</commons-text.version>
+        <commons-text.version>1.9</commons-text.version>
         <commons-compress.version>1.20</commons-compress.version>
         <poi.version>4.1.2</poi.version>
         <javax.servlet-api.version>4.0.1</javax.servlet-api.version>
